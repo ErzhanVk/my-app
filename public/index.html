@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мій Хмарний Додаток</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        h1 {
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+            background: linear-gradient(to right, #00c6ff, #0072ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        p {
+            color: #ccc;
+            font-size: 1.1rem;
+        }
+        .status-card {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.2);
+            font-weight: bold;
+        }
+        .loading { color: #f1c40f; }
+        .success { color: #2ecc71; }
+        .error { color: #e74c3c; }
+        .time {
+            font-family: monospace;
+            font-size: 0.9rem;
+            color: #95a5a6;
+            margin-top: 10px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Хмарний Деплой</h1>
+        <p>Лабораторна робота: Розгортання додатку в Docker & Railway</p>
+        
+        <div class="status-card">
+            Статус бази даних: 
+            <span id="db-status" class="loading">Перевірка...</span>
+            <span id="db-time" class="time"></span>
+        </div>
+    </div>
+
+    <script>
+        fetch('/api/db-check')
+            .then(res => res.json())
+            .then(data => {
+                const statusEl = document.getElementById('db-status');
+                const timeEl = document.getElementById('db-time');
+                
+                if (data.status === 'success') {
+                    statusEl.innerText = data.message;
+                    statusEl.className = 'success';
+                    timeEl.innerText = 'Час БД: ' + data.dbTime;
+                } else {
+                    statusEl.innerText = data.message;
+                    statusEl.className = 'error';
+                }
+            })
+            .catch(err => {
+                const statusEl = document.getElementById('db-status');
+                statusEl.innerText = 'Сервер недоступний';
+                statusEl.className = 'error';
+            });
+    </script>
+</body>
+</html>
